@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
@@ -22,7 +23,14 @@ public class MainActivity extends AppCompatActivity {
 
         punktyViewModel = new ViewModelProvider(this).get(PunktyViewModel.class);
 
-        binding.punktyTextView.setText(Integer.toString(punktyViewModel.getPunkty()));
+        punktyViewModel.getPunkty().observe(this,
+                new Observer<Integer>() {
+                    @Override
+                    public void onChanged(Integer integer) {
+                        binding.punktyTextView.setText(String.valueOf(integer));
+                    }
+                }
+        );
 
         //dzięki bindowaniu widoków nie musimy uzywać findViewById
         //https://developer.android.com/topic/libraries/view-binding
@@ -31,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         punktyViewModel.dodajPunkty(1);
-                        binding.punktyTextView.setText(Integer.toString(punktyViewModel.getPunkty()));
+
                     }
                 }
         );
@@ -40,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         punktyViewModel.dodajPunkty(2);
-                        binding.punktyTextView.setText(Integer.toString(punktyViewModel.getPunkty()));
+
                     }
                 }
         );
@@ -49,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         punktyViewModel.dodajPunkty(3);
-                        binding.punktyTextView.setText(Integer.toString(punktyViewModel.getPunkty()));
+
                     }
                 }
         );
