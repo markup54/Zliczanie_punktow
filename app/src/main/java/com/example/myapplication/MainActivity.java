@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.example.myapplication.databinding.ActivityMainBinding;
@@ -13,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
     PunktyViewModel punktyViewModel;
+    private SharedPreferences punktySharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,9 +23,10 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
+        punktySharedPreferences = getPreferences(MODE_PRIVATE);
 
         punktyViewModel = new ViewModelProvider(this).get(PunktyViewModel.class);
-
+        odczytajSharedPreferences();
         punktyViewModel.getPunkty().observe(this,
                 new Observer<Integer>() {
                     @Override
@@ -63,4 +67,22 @@ public class MainActivity extends AppCompatActivity {
         );
 
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        zapiszSharedPreferences();
+    }
+
+    private void zapiszSharedPreferences(){
+        SharedPreferences.Editor edytor = punktySharedPreferences.edit();
+        edytor.putInt("PUNKTY",punktyViewModel.getPunkty().getValue());
+        edytor.apply();
+    }
+    private void odczytajSharedPreferences(){
+        int p = punktySharedPreferences.getInt("PUNKTY",0);
+        Log.d("Punkty",Integer.toString(p));
+        punktyViewModel.setPunkty(p);
+    }
+
 }
